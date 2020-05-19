@@ -116,8 +116,8 @@ function mount_basic_filesystems_lvm() {
     local partition=${2}
 
     mount "/dev/${lvm_name}/root" /mnt
-    mkdir '/mnt/boot'
-    mount "${partition}" '/mnt/boot'
+    mkdir -p '/mnt/boot/EFI'
+    mount "${partition}" '/mnt/boot/EFI'
 }
 
 function arch_configure_mirrors() {
@@ -334,7 +334,7 @@ function arch_setup_systemd_boot_luks_lvm() {
 }
 
 function set_systemd_boot_install_path() {
-    bootctl --path=/boot install
+    bootctl --path=/boot/EFI install
 }
 
 function create_user() {
