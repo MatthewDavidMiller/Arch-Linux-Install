@@ -14,9 +14,7 @@ device_hostname='MatthewLaptop'
 swap_file_size='2048'
 
 # Source functions
-source linux_scripts.sh
-source arch_linux_scripts.sh
-source linux_install_scripts.sh
+source install_functions.sh
 source /tmp/temp_variables.sh
 
 # Prompts, uncomment to use
@@ -45,3 +43,4 @@ set_systemd_boot_install_path
 create_user "${user_name}"
 add_user_to_sudo "${user_name}"
 enable_network_manager
+set_shell_bash "${user_name}"

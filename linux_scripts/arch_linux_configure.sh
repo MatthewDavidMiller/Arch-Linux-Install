@@ -27,20 +27,18 @@ read -r -p "Run setup_aliases script? [y/N] " setup_aliases_var
 read -r -p "Run setup_fwupd script? [y/N] " configure_fwupd_var
 read -r -p "Run setup_git script? [y/N] " configure_git_var
 read -r -p "Run setup_serial script? [y/N] " setup_serial_var
+read -r -p "Configure cli autologin? [y/N] " cli_autologin_response
 
 # Get needed scripts
-wget -O 'linux_scripts.sh' 'https://raw.githubusercontent.com/MatthewDavidMiller/scripts/stable/linux_scripts/linux_scripts.sh'
-wget -O 'arch_linux_scripts.sh' 'https://raw.githubusercontent.com/MatthewDavidMiller/scripts/stable/linux_scripts/arch_linux_scripts.sh'
-wget -O 'xorg_scripts.sh' 'https://raw.githubusercontent.com/MatthewDavidMiller/scripts/stable/linux_scripts/xorg_scripts.sh'
+wget -O 'configuration_functions.sh' 'https://raw.githubusercontent.com/MatthewDavidMiller/Arch-Linux-Install/stable/linux_scripts/configuration_functions.sh'
 
 # Source functions
-source linux_scripts.sh
-source arch_linux_scripts.sh
-source xorg_scripts.sh
+source configuration_functions.sh
 
 # Call functions
 get_username
 enable_bluetooth
+configure_ufw_base
 enable_ufw
 configure_xorg "${user_name}"
 setup_touchpad
@@ -129,4 +127,8 @@ fi
 
 if [[ "${ostimer}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     configure_ostimer
+fi
+
+if [[ "${cli_autologin_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+    cli_autologin
 fi

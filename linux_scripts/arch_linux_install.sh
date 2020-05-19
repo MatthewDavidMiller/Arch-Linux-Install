@@ -9,13 +9,10 @@
 # exec 2>arch_linux_install.sh_errors.txt
 
 # Get needed scripts
-wget -O 'linux_scripts.sh' 'https://raw.githubusercontent.com/MatthewDavidMiller/scripts/stable/linux_scripts/linux_scripts.sh'
-wget -O 'arch_linux_scripts.sh' 'https://raw.githubusercontent.com/MatthewDavidMiller/scripts/stable/linux_scripts/arch_linux_scripts.sh'
-wget -O 'linux_install_scripts.sh' 'https://raw.githubusercontent.com/MatthewDavidMiller/scripts/stable/linux_scripts/linux_install_scripts.sh'
+wget -O 'linux_scripts.sh' 'https://raw.githubusercontent.com/MatthewDavidMiller/Arch-Linux-Install/stable/linux_scripts/install_functions.sh'
 
 # Source functions
-source linux_scripts.sh
-source arch_linux_scripts.sh
+source install_functions.sh
 
 # Default variables
 wifi_response='n'
@@ -68,7 +65,7 @@ if [[ "${delete_partitions_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     delete_all_partitions_on_a_disk "${disk}"
 fi
 
-get_ucode_type "${distro}"
+get_ucode_type "${ucode_response}"
 create_basic_partitions
 create_luks_partition "${disk_password}" "${partition2}"
 create_basic_lvm "${partition2}" '/tmp/disk_password' "${lvm_name}" "${root_partition_size}" "${home_partition_size}"
