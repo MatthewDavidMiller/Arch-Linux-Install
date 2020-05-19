@@ -122,8 +122,8 @@ function mount_basic_filesystems_lvm() {
 
     mount "/dev/${lvm_name}/root" /mnt
     mkdir '/mnt/boot'
-    mkdir '/mnt/boot/EFI'
     mount "${partition}" '/mnt/boot'
+    mkdir '/mnt/boot/EFI'
 
     if [[ "${duel_boot}" =~ ^([d][b])+$ ]]; then
         mount "${windows_efi_partition}" '/mnt/boot/EFI'
