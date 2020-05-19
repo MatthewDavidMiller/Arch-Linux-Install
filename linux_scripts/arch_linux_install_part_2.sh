@@ -11,7 +11,7 @@
 # Default variables
 user_name='matthew'
 device_hostname='MatthewLaptop'
-swap_file_size='2048'
+swap_file_size='1024'
 
 # Source functions
 source install_functions.sh
