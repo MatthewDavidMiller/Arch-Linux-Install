@@ -334,7 +334,7 @@ function arch_setup_systemd_boot_luks_lvm() {
 }
 
 function set_systemd_boot_install_path() {
-    bootctl --path=/boot/EFI install
+    bootctl --path=/boot install
 }
 
 function create_user() {
