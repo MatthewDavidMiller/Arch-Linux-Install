@@ -93,7 +93,7 @@ function create_basic_lvm() {
     cryptsetup open "${partition}" cryptlvm <"${disk_password}"
     pvcreate '/dev/mapper/cryptlvm'
     vgcreate "${lvm_name}" '/dev/mapper/cryptlvm'
-    lvcreate -L "${root_partition_size}" "${lvm_name}" -n root
+    lvcreate -l "${root_partition_size}" "${lvm_name}" -n root
     rm -f "${disk_password}"
 }
 
