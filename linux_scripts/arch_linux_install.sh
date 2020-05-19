@@ -16,10 +16,10 @@ source install_functions.sh
 
 # Default variables
 wifi_response='n'
-windows_response='n'
+windows_response='y'
 disk='/dev/sda'
-partition_number1='1'
-partition_number2='2'
+partition_number1='2'
+partition_number2='3'
 delete_partitions_response='n'
 ucode_response='y'
 wifi_interface='wlan0'
