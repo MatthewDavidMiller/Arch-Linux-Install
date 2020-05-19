@@ -24,7 +24,7 @@ delete_partitions_response='n'
 ucode_response='y'
 wifi_interface='wlan0'
 ssid='Miller Homelab'
-root_partition_size='12G'
+root_partition_size='40G'
 lvm_name='Archlvm'
 
 # Prompts, uncomment to use
