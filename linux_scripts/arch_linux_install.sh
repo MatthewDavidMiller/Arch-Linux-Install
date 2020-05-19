@@ -64,7 +64,7 @@ if [[ "${delete_partitions_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
 fi
 
 get_ucode_type "${ucode_response}"
-create_basic_partitions
+create_basic_partitions "${root_partition_size}"
 create_luks_partition "${disk_password}" "${partition2}"
 create_basic_lvm "${partition2}" '/tmp/disk_password' "${lvm_name}" "${root_partition_size}"
 

@@ -60,13 +60,16 @@ function get_ucode_type() {
 }
 
 function create_basic_partitions() {
+    # Parameters
+    local root_partition_size=${1}
+
     if [[ "${windows_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
         # Creates one partition.  Partition uses the rest of the free space avalailable to create a Linux filesystem partition.
-        sgdisk -n 0:0:0 -c "${partition_number2}":"Linux Filesystem" -t "${partition_number2}":8300 "${disk}"
+        sgdisk -n 0:0:+${root_partition_size} -c "${partition_number2}":"Linux Filesystem" -t "${partition_number2}":8300 "${disk}"
     else
         # Creates two partitions.  First one is a 512 MB EFI partition while the second uses the rest of the free space avalailable to create a Linux filesystem partition.
         sgdisk -n 0:0:+512MiB -c "${partition_number1}":"EFI System Partition" -t "${partition_number1}":ef00 "${disk}"
-        sgdisk -n 0:0:0 -c "${partition_number2}":"Linux Filesystem" -t "${partition_number2}":8300 "${disk}"
+        sgdisk -n 0:0:+${root_partition_size} -c "${partition_number2}":"Linux Filesystem" -t "${partition_number2}":8300 "${disk}"
     fi
 }
 
