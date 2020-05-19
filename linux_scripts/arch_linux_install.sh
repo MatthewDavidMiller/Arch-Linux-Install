@@ -25,7 +25,7 @@ ucode_response='y'
 wifi_interface='wlan0'
 ssid='Miller Homelab'
 partition_1_size='100M'
-partition_2_size='8193'
+partition_2_size='8193M'
 root_partition_size='8G'
 lvm_name='Archlvm'
 
