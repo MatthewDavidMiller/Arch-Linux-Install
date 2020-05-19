@@ -26,8 +26,19 @@ source /tmp/temp_variables.sh
 
 # Call functions
 arch_install_extra_packages
-get_lvm_uuids
-create_basic_lvm_fstab
+
+if [[ "${windows_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+    get_lvm_uuids "db" "${windows_efi_partition}"
+else
+    get_lvm_uuids "" ""
+fi
+
+if [[ "${windows_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+    create_basic_lvm_fstab "db"
+else
+    create_basic_lvm_fstab ""
+fi
+
 create_swap_file "${swap_file_size}"
 set_timezone
 set_hardware_clock

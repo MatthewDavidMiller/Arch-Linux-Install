@@ -18,13 +18,14 @@ source install_functions.sh
 wifi_response='n'
 windows_response='y'
 disk='/dev/sda'
-partition_number1='2'
-partition_number2='5'
+windows_efi_partition_number='2'
+partition_number1='5'
+partition_number2='6'
 delete_partitions_response='n'
 ucode_response='y'
 wifi_interface='wlan0'
 ssid='Miller Homelab'
-partition_1_size='100M'
+partition_1_size='512M'
 partition_2_size='8193M'
 root_partition_size='100%FREE'
 lvm_name='Archlvm'
@@ -40,6 +41,7 @@ lvm_name='Archlvm'
 #read -r -p "Specify partition number for lvm. Example '2': " partition_number2
 partition1="${disk}${partition_number1}"
 partition2="${disk}${partition_number2}"
+windows_efi_partition="${disk}${windows_efi_partition_number}"
 # Specify whether to delete all partitions
 #read -r -p "Do you want to delete all parititions on ${disk}? [y/N] " delete_partitions_response
 # Specify if cpu is intel
@@ -72,10 +74,10 @@ create_basic_lvm "${partition2}" '/tmp/disk_password' "${lvm_name}" "${root_part
 
 if [[ "${windows_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     create_basic_filesystems_lvm "${lvm_name}" "db" "${partition1}"
-    mount_basic_filesystems_lvm "${lvm_name}" "${partition1}"
+    mount_basic_filesystems_lvm "${lvm_name}" "${partition1}" "${windows_efi_partition}" "db"
 else
     create_basic_filesystems_lvm "${lvm_name}" "" "${partition1}"
-    mount_basic_filesystems_lvm "${lvm_name}" "${partition1}"
+    mount_basic_filesystems_lvm "${lvm_name}" "${partition1}" "${windows_efi_partition}" ""
 fi
 
 arch_configure_mirrors

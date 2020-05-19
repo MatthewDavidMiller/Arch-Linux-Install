@@ -65,10 +65,11 @@ function create_basic_partitions() {
     local partition_2_size=${2}
 
     if [[ "${windows_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        # Creates one partition.  Partition uses the rest of the free space avalailable to create a Linux filesystem partition.
+        # Creates two partitions.  Both are Linux filesystem partitions.
+        sgdisk -n 0:0:+${partition_1_size} -c "${partition_number1}":"Linux Filesystem" -t "${partition_number1}":ef00 "${disk}"
         sgdisk -n 0:0:+${partition_2_size} -c "${partition_number2}":"Linux Filesystem" -t "${partition_number2}":8300 "${disk}"
     else
-        # Creates two partitions.  First one is a 512 MB EFI partition while the second uses the rest of the free space avalailable to create a Linux filesystem partition.
+        # Creates two partitions.  First one is a 512 MB EFI partition while the second creates a Linux filesystem partition.
         sgdisk -n 0:0:+${partition_1_size} -c "${partition_number1}":"EFI System Partition" -t "${partition_number1}":ef00 "${disk}"
         sgdisk -n 0:0:+${partition_2_size} -c "${partition_number2}":"Linux Filesystem" -t "${partition_number2}":8300 "${disk}"
     fi
@@ -105,7 +106,9 @@ function create_basic_filesystems_lvm() {
 
     mkfs.ext4 "/dev/${lvm_name}/root"
 
-    if [[ ! "${duel_boot}" =~ ^([d][b])+$ ]]; then
+    if [[ "${duel_boot}" =~ ^([d][b])+$ ]]; then
+        mkfs.ext4 "${partition}"
+    else
         mkfs.fat -F32 "${partition}"
     fi
 }
@@ -114,10 +117,17 @@ function mount_basic_filesystems_lvm() {
     # Parameters
     local lvm_name=${1}
     local partition=${2}
+    local windows_efi_partition=${3}
+    local duel_boot=${4}
 
     mount "/dev/${lvm_name}/root" /mnt
     mkdir -p '/mnt/boot/EFI'
-    mount "${partition}" '/mnt/boot/EFI'
+    mount "${partition}" '/mnt/boot'
+
+    if [[ "${duel_boot}" =~ ^([d][b])+$ ]]; then
+        mount "${windows_efi_partition}" '/mnt/boot/EFI'
+    fi
+
 }
 
 function arch_configure_mirrors() {
@@ -177,6 +187,7 @@ uuid2="${uuid2}"
 windows_response="${windows_response}"
 lvm_name="${lvm_name}"
 disk_password="${disk_password}"
+windows_efi_partition="${windows_efi_partition}"
 EOF
     arch-chroot /mnt "./arch_linux_install_part_2.sh"
 }
@@ -186,18 +197,34 @@ function arch_install_extra_packages() {
 }
 
 function get_lvm_uuids() {
+    # Parameters
+    local duel_boot=${1}
+    local windows_efi_partition=${2}
+
     boot_uuid=uuid="$(blkid -o value -s UUID "${partition1}")"
     luks_partition_uuid="$(blkid -o value -s UUID "${partition2}")"
     root_uuid="$(blkid -o value -s UUID /dev/Archlvm/root)"
+
+    if [[ "${duel_boot}" =~ ^([d][b])+$ ]]; then
+        windows_efi_uuid="$(blkid -o value -s UUID "${windows_efi_partition}")"
+    fi
+
 }
 
 function create_basic_lvm_fstab() {
+    # Parameters
+    local duel_boot=${1}
+
     rm -f '/etc/fstab'
     {
-        printf '%s\n' "UUID=${boot_uuid} /boot/EFI vfat defaults 0 0"
+        printf '%s\n' "UUID=${boot_uuid} /boot vfat defaults 0 0"
         printf '%s\n' '/swapfile none swap defaults 0 0'
         printf '%s\n' "UUID=${root_uuid} / ext4 defaults 0 0"
     } >>'/etc/fstab'
+
+    if [[ "${duel_boot}" =~ ^([d][b])+$ ]]; then
+        printf '%s\n' "UUID=${windows_efi_uuid} /boot/EFI vfat defaults 0 0" >>'/etc/fstab'
+    fi
 }
 
 function create_swap_file() {
