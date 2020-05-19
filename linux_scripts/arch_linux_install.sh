@@ -24,7 +24,9 @@ delete_partitions_response='n'
 ucode_response='y'
 wifi_interface='wlan0'
 ssid='Miller Homelab'
-root_partition_size='40G'
+partition_1_size='100M'
+partition_2_size='12289M'
+root_partition_size='12G'
 lvm_name='Archlvm'
 
 # Prompts, uncomment to use
@@ -64,7 +66,7 @@ if [[ "${delete_partitions_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
 fi
 
 get_ucode_type "${ucode_response}"
-create_basic_partitions "${root_partition_size}"
+create_basic_partitions "${partition_1_size}" "${partition_2_size}"
 create_luks_partition "${disk_password}" "${partition2}"
 create_basic_lvm "${partition2}" '/tmp/disk_password' "${lvm_name}" "${root_partition_size}"
 

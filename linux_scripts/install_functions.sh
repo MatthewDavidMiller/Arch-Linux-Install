@@ -61,15 +61,16 @@ function get_ucode_type() {
 
 function create_basic_partitions() {
     # Parameters
-    local root_partition_size=${1}
+    local partition_1_size=${1}
+    local partition_2_size=${2}
 
     if [[ "${windows_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
         # Creates one partition.  Partition uses the rest of the free space avalailable to create a Linux filesystem partition.
-        sgdisk -n 0:0:+${root_partition_size} -c "${partition_number2}":"Linux Filesystem" -t "${partition_number2}":8300 "${disk}"
+        sgdisk -n 0:0:+${partition_size} -c "${partition_number2}":"Linux Filesystem" -t "${partition_number2}":8300 "${disk}"
     else
         # Creates two partitions.  First one is a 512 MB EFI partition while the second uses the rest of the free space avalailable to create a Linux filesystem partition.
-        sgdisk -n 0:0:+512MiB -c "${partition_number1}":"EFI System Partition" -t "${partition_number1}":ef00 "${disk}"
-        sgdisk -n 0:0:+${root_partition_size} -c "${partition_number2}":"Linux Filesystem" -t "${partition_number2}":8300 "${disk}"
+        sgdisk -n 0:0:+${partition_1_size} -c "${partition_number1}":"EFI System Partition" -t "${partition_number1}":ef00 "${disk}"
+        sgdisk -n 0:0:+${partition_2_size} -c "${partition_number2}":"Linux Filesystem" -t "${partition_number2}":8300 "${disk}"
     fi
 }
 
@@ -164,7 +165,6 @@ function arch_install_move_to_script_part_2() {
 disk="${disk}"
 partition_number1="${partition_number1}"
 partition_number2="${partition_number2}"
-delete_partitions_response="${delete_partitions_response}"
 ucode_response="${ucode_response}"
 device_hostname="${device_hostname}"
 user_name="${user_name}"
@@ -174,11 +174,7 @@ ucode="${ucode}"
 interface="${interface}"
 uuid="${uuid}"
 uuid2="${uuid2}"
-wifi_response="${wifi_response}"
 windows_response="${windows_response}"
-wifi_interface="${wifi_interface}"
-ssid="${ssid}"
-root_partition_size="${root_partition_size}"
 lvm_name="${lvm_name}"
 disk_password="${disk_password}"
 EOF
