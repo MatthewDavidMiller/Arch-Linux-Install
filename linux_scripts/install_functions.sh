@@ -85,13 +85,11 @@ function create_basic_lvm() {
     local disk_password=${2}
     local lvm_name=${3}
     local root_partition_size=${4}
-    local home_partition_size=${5}
 
     cryptsetup open "${partition}" cryptlvm <"${disk_password}"
     pvcreate '/dev/mapper/cryptlvm'
     vgcreate "${lvm_name}" '/dev/mapper/cryptlvm'
     lvcreate -L "${root_partition_size}" "${lvm_name}" -n root
-    lvcreate -l "${home_partition_size}" "${lvm_name}" -n home
     rm -f "${disk_password}"
 }
 
@@ -102,7 +100,7 @@ function create_basic_filesystems_lvm() {
     local partition=${3}
 
     mkfs.ext4 "/dev/${lvm_name}/root"
-    mkfs.ext4 "/dev/${lvm_name}/home"
+
     if [[ ! "${duel_boot}" =~ ^([d][b])+$ ]]; then
         mkfs.fat -F32 "${partition}"
     fi
@@ -114,8 +112,6 @@ function mount_basic_filesystems_lvm() {
     local partition=${2}
 
     mount "/dev/${lvm_name}/root" /mnt
-    mkdir '/mnt/home'
-    mount "/dev/${lvm_name}/home" '/mnt/home'
     mkdir '/mnt/boot'
     mount "${partition}" '/mnt/boot'
 }
@@ -167,7 +163,6 @@ partition_number1="${partition_number1}"
 partition_number2="${partition_number2}"
 delete_partitions_response="${delete_partitions_response}"
 ucode_response="${ucode_response}"
-distro="${distro}"
 device_hostname="${device_hostname}"
 user_name="${user_name}"
 partition1="${partition1}"
@@ -181,7 +176,6 @@ windows_response="${windows_response}"
 wifi_interface="${wifi_interface}"
 ssid="${ssid}"
 root_partition_size="${root_partition_size}"
-home_partition_size="${home_partition_size}"
 lvm_name="${lvm_name}"
 disk_password="${disk_password}"
 EOF
@@ -196,7 +190,6 @@ function get_lvm_uuids() {
     boot_uuid=uuid="$(blkid -o value -s UUID "${partition1}")"
     luks_partition_uuid="$(blkid -o value -s UUID "${partition2}")"
     root_uuid="$(blkid -o value -s UUID /dev/Archlvm/root)"
-    home_uuid="$(blkid -o value -s UUID /dev/Archlvm/home)"
 }
 
 function create_basic_lvm_fstab() {
@@ -205,7 +198,6 @@ function create_basic_lvm_fstab() {
         printf '%s\n' "UUID=${boot_uuid} /boot/EFI vfat defaults 0 0"
         printf '%s\n' '/swapfile none swap defaults 0 0'
         printf '%s\n' "UUID=${root_uuid} / ext4 defaults 0 0"
-        printf '%s\n' "UUID=${home_uuid} / ext4 defaults 0 0"
     } >>'/etc/fstab'
 }
 
