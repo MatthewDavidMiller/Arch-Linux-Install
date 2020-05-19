@@ -121,7 +121,8 @@ function mount_basic_filesystems_lvm() {
     local duel_boot=${4}
 
     mount "/dev/${lvm_name}/root" /mnt
-    mkdir -p '/mnt/boot/EFI'
+    mkdir '/mnt/boot'
+    mkdir '/mnt/boot/EFI'
     mount "${partition}" '/mnt/boot'
 
     if [[ "${duel_boot}" =~ ^([d][b])+$ ]]; then
