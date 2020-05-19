@@ -9,7 +9,7 @@
 # exec 2>arch_linux_install.sh_errors.txt
 
 # Get needed scripts
-wget -O 'linux_scripts.sh' 'https://raw.githubusercontent.com/MatthewDavidMiller/Arch-Linux-Install/stable/linux_scripts/install_functions.sh'
+wget -O 'install_functions.sh' 'https://raw.githubusercontent.com/MatthewDavidMiller/Arch-Linux-Install/stable/linux_scripts/install_functions.sh'
 
 # Source functions
 source install_functions.sh
