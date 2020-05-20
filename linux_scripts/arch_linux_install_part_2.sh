@@ -8,14 +8,14 @@
 # Log errors
 # exec 2>arch_linux_install_part_2.sh_errors.txt
 
+# Source functions
+source install_functions.sh
+source temp_variables.sh
+
 # Default variables
 user_name='matthew'
 device_hostname='MatthewLaptop'
 swap_file_size='1024'
-
-# Source functions
-source install_functions.sh
-source temp_variables.sh
 
 # Prompts, uncomment to use
 
