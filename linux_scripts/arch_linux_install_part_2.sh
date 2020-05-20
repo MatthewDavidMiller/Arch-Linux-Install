@@ -25,7 +25,12 @@ source /tmp/temp_variables.sh
 #read -r -p "Specify a username for a new user: " user_name
 
 # Call functions
-arch_install_extra_packages
+
+if [[ "${windows_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+    arch_install_extra_packages "db"
+else
+    arch_install_extra_packages ""
+fi
 
 if [[ "${windows_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     get_lvm_uuids "db" "${windows_efi_partition}"
