@@ -427,6 +427,7 @@ function connect_smb() {
         read -r -p "Do you want to mount another samba share? [y/N] " response
         if [[ "${response}" =~ ^([nN][oO]|[nN])+$ ]]; then
             printf '%s\n' '' >>'/etc/fstab'
+            mount -a
             break
         fi
     done
