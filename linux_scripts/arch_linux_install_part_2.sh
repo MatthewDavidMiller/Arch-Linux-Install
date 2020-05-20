@@ -15,7 +15,7 @@ swap_file_size='1024'
 
 # Source functions
 source install_functions.sh
-source /tmp/temp_variables.sh
+source temp_variables.sh
 
 # Prompts, uncomment to use
 
