@@ -735,7 +735,7 @@ function cli_autologin() {
     # Parameters
     local user_name=${1}
 
-    mkdir -p '/etc/systemd/system//getty@tty1.service.d'
+    mkdir -p '/etc/systemd/system/getty@tty1.service.d'
     cat <<EOF >'/etc/systemd/system/getty@tty1.service.d/override.conf'
 [Service]
 ExecStart=

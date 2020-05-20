@@ -130,5 +130,5 @@ if [[ "${ostimer}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
 fi
 
 if [[ "${cli_autologin_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-    cli_autologin
+    cli_autologin "${user_name}"
 fi
