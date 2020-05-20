@@ -65,8 +65,7 @@ function create_basic_partitions() {
     local partition_2_size=${2}
 
     if [[ "${windows_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        # Creates two partitions.  Both are Linux filesystem partitions.
-        sgdisk -n 0:0:+${partition_1_size} -c "${partition_number1}":"Linux Filesystem" -t "${partition_number1}":8300 "${disk}"
+        # Creates one partition.  Partition is a Linux Filesystem.
         sgdisk -n 0:0:+${partition_2_size} -c "${partition_number2}":"Linux Filesystem" -t "${partition_number2}":8300 "${disk}"
     else
         # Creates two partitions.  First one is a 512 MB EFI partition while the second creates a Linux filesystem partition.
@@ -106,9 +105,7 @@ function create_basic_filesystems_lvm() {
 
     mkfs.ext4 "/dev/${lvm_name}/root"
 
-    if [[ "${duel_boot}" =~ ^([d][b])+$ ]]; then
-        mkfs.ext4 "${partition}"
-    else
+    if [[ ! "${duel_boot}" =~ ^([d][b])+$ ]]; then
         mkfs.fat -F32 "${partition}"
     fi
 }
@@ -121,12 +118,12 @@ function mount_basic_filesystems_lvm() {
     local duel_boot=${4}
 
     mount "/dev/${lvm_name}/root" /mnt
-    mkdir '/mnt/boot'
-    mount "${partition}" '/mnt/boot'
-    mkdir '/mnt/boot/EFI'
+    mkdir -p '/mnt/boot'
 
     if [[ "${duel_boot}" =~ ^([d][b])+$ ]]; then
-        mount "${windows_efi_partition}" '/mnt/boot/EFI'
+        mount "${windows_efi_partition}" '/mnt/boot'
+    else
+        mount "${partition}" '/mnt/boot'
     fi
 
 }
@@ -202,12 +199,13 @@ function get_lvm_uuids() {
     local duel_boot=${1}
     local windows_efi_partition=${2}
 
-    boot_uuid=uuid="$(blkid -o value -s UUID "${partition1}")"
     luks_partition_uuid="$(blkid -o value -s UUID "${partition2}")"
     root_uuid="$(blkid -o value -s UUID /dev/Archlvm/root)"
 
     if [[ "${duel_boot}" =~ ^([d][b])+$ ]]; then
         windows_efi_uuid="$(blkid -o value -s UUID "${windows_efi_partition}")"
+    else
+        boot_uuid=uuid="$(blkid -o value -s UUID "${partition1}")"
     fi
 
 }
@@ -218,13 +216,14 @@ function create_basic_lvm_fstab() {
 
     rm -f '/etc/fstab'
     {
-        printf '%s\n' "UUID=${boot_uuid} /boot vfat defaults 0 0"
         printf '%s\n' '/swapfile none swap defaults 0 0'
         printf '%s\n' "UUID=${root_uuid} / ext4 defaults 0 0"
     } >>'/etc/fstab'
 
     if [[ "${duel_boot}" =~ ^([d][b])+$ ]]; then
-        printf '%s\n' "UUID=${windows_efi_uuid} /boot/EFI vfat defaults 0 0" >>'/etc/fstab'
+        printf '%s\n' "UUID=${windows_efi_uuid} /boot vfat defaults 0 0" >>'/etc/fstab'
+    else
+        printf '%s\n' "UUID=${boot_uuid} /boot vfat defaults 0 0"
     fi
 }
 
