@@ -52,7 +52,7 @@ fi
 
 if [[ "${configure_i3_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     # Install packages
-    pacman -S --noconfirm --needed i3-wm i3blocks i3lock i3status dmenu picom xorg-xrandr || echo 'Error installing packages.'
+    pacman -S --noconfirm --needed i3-wm i3blocks i3lock i3status dmenu picom xorg-xrandr acpilight || echo 'Error installing packages.'
     configure_i3_sway_base "${user_name}" "${wifi_name}" "i3"
     configure_xinit
     configure_xinit_i3
@@ -82,7 +82,7 @@ fi
 
 if [[ "${configure_sway_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     # Install packages
-    pacman -S --noconfirm --needed sway swayidle swaylock i3status dmenu xorg-server-xwayland polkit-gnome xorg-xrandr || echo 'Error installing packages.'
+    pacman -S --noconfirm --needed sway swayidle swaylock i3status dmenu xorg-server-xwayland polkit-gnome xorg-xrandr acpilight || echo 'Error installing packages.'
     configure_i3_sway_base "${user_name}" "${wifi_name}" "sway"
     configure_sway_config_file "${user_name}"
 fi
