@@ -8,6 +8,12 @@
 # Get script location
 # script_location="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
+# Get needed scripts
+wget -O 'configuration_functions.sh' 'https://raw.githubusercontent.com/MatthewDavidMiller/Arch-Linux-Install/stable/linux_scripts/configuration_functions.sh'
+
+# Source functions
+source configuration_functions.sh
+
 # Default variables
 wifi_name='Miller Homelab'
 
@@ -28,12 +34,6 @@ read -r -p "Run setup_fwupd script? [y/N] " configure_fwupd_var
 read -r -p "Run setup_git script? [y/N] " configure_git_var
 read -r -p "Run setup_serial script? [y/N] " setup_serial_var
 read -r -p "Configure cli autologin? [y/N] " cli_autologin_response
-
-# Get needed scripts
-wget -O 'configuration_functions.sh' 'https://raw.githubusercontent.com/MatthewDavidMiller/Arch-Linux-Install/stable/linux_scripts/configuration_functions.sh'
-
-# Source functions
-source configuration_functions.sh
 
 # Call functions
 get_username
