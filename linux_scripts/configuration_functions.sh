@@ -742,3 +742,8 @@ ExecStart=
 ExecStart=-/usr/bin/agetty --autologin ${user_name} --noclear %I \$TERM
 EOF
 }
+
+function configure_flatpak() {
+    pacman -S --noconfirm --needed flatpak
+    flatpak remote-add --if-not-exists flathub 'https://flathub.org/repo/flathub.flatpakrepo'
+}

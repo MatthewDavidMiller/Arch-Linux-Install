@@ -45,6 +45,7 @@ setup_touchpad
 rank_mirrors
 pacman_auto_clear_cache
 lock_root
+configure_flatpak
 
 if [[ "${install_arch_packages_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     install_arch_packages
