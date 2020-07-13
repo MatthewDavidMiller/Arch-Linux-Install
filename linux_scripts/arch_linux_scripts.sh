@@ -24,7 +24,7 @@ function update_aur_packages() {
         git checkout -- .
         git fetch
         read -r -p "Check the contents of the files before installing. Press enter to continue: "
-        git diff master...origin/master
+        git diff origin
         read -r -p "Ready to update? [y/N] " response2
         if [[ "${response2}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
             git pull
@@ -41,7 +41,7 @@ function update_aur_packages() {
         git checkout -- .
         git fetch
         read -r -p "Check the contents of the files before installing. Press enter to continue: "
-        git diff master...origin/master
+        git diff origin
         read -r -p "Ready to update? [y/N] " response4
         if [[ "${response4}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
             git pull
@@ -56,7 +56,7 @@ function update_aur_packages() {
         git checkout -- .
         git fetch
         read -r -p "Check the contents of the files before installing. Press enter to continue: "
-        git diff master...origin/master
+        git diff origin
         read -r -p "Ready to update? [y/N] " response6
         if [[ "${response6}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
             git pull
