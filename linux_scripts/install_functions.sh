@@ -259,7 +259,7 @@ function enable_ntpd_client() {
 }
 
 function arch_setup_locales() {
-    sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+    sed -i -E 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
     # Generate locale
     locale-gen
 }

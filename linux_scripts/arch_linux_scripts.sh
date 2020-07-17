@@ -72,15 +72,15 @@ function configure_i3_applet_autostarts() {
     local nm_applet=$1
 
     if [[ "${blueman_applet}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        grep -q ".*blueman-applet" '/usr/local/bin/i3_autostart.sh' && sed -i "s,.*blueman-applet.*,blueman-applet &," '/usr/local/bin/i3_autostart.sh' || printf '%s\n' 'blueman-applet &' >>'/usr/local/bin/i3_autostart.sh'
+        grep -q -E ".*blueman-applet" '/usr/local/bin/i3_autostart.sh' && sed -i -E "s,.*blueman-applet.*,blueman-applet &," '/usr/local/bin/i3_autostart.sh' || printf '%s\n' 'blueman-applet &' >>'/usr/local/bin/i3_autostart.sh'
     fi
 
     if [[ "${pasystray_applet}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        grep -q ".*pasystray" '/usr/local/bin/i3_autostart.sh' && sed -i "s,.*pasystray.*,pasystray &," '/usr/local/bin/i3_autostart.sh' || printf '%s\n' 'pasystray &' >>'/usr/local/bin/i3_autostart.sh'
+        grep -q -E ".*pasystray" '/usr/local/bin/i3_autostart.sh' && sed -i -E "s,.*pasystray.*,pasystray &," '/usr/local/bin/i3_autostart.sh' || printf '%s\n' 'pasystray &' >>'/usr/local/bin/i3_autostart.sh'
     fi
 
     if [[ "${nm_applet}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        grep -q ".*nm-applet" '/usr/local/bin/i3_autostart.sh' && sed -i "s,.*nm-applet.*,nm-applet &," '/usr/local/bin/i3_autostart.sh' || printf '%s\n' 'nm-applet &' >>'/usr/local/bin/i3_autostart.sh'
+        grep -q -E ".*nm-applet" '/usr/local/bin/i3_autostart.sh' && sed -i -E "s,.*nm-applet.*,nm-applet &," '/usr/local/bin/i3_autostart.sh' || printf '%s\n' 'nm-applet &' >>'/usr/local/bin/i3_autostart.sh'
     fi
 }
 
