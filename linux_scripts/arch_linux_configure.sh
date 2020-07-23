@@ -52,7 +52,7 @@ fi
 
 if [[ "${configure_i3_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     # Install packages
-    pacman -S --noconfirm --needed i3-wm i3blocks i3lock i3status dmenu picom xorg-xrandr acpilight
+    pacman -S --needed i3-wm i3blocks i3lock i3status dmenu picom xorg-xrandr acpilight
     configure_i3_sway_base "${user_name}" "${wifi_name}" "i3"
     configure_xinit
     configure_xinit_i3
