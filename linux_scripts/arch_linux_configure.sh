@@ -52,7 +52,7 @@ fi
 
 if [[ "${configure_i3_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     # Install packages
-    pacman -S --noconfirm --needed i3-wm i3blocks i3lock i3status dmenu picom xorg-xrandr acpilight || echo 'Error installing packages.'
+    pacman -S --noconfirm --needed i3-wm i3blocks i3lock i3status dmenu picom xorg-xrandr acpilight
     configure_i3_sway_base "${user_name}" "${wifi_name}" "i3"
     configure_xinit
     configure_xinit_i3
@@ -60,7 +60,7 @@ fi
 
 if [[ "${connect_smb_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     # Install samba
-    pacman -S --noconfirm --needed samba || echo 'Error installing packages.'
+    pacman -S --noconfirm --needed samba
     connect_smb "${user_name}"
 fi
 
@@ -70,26 +70,26 @@ fi
 
 if [[ "${configure_hyperv_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     # Install hyperv tools
-    pacman -S --noconfirm --needed hyperv || echo 'Error installing packages.'
+    pacman -S --noconfirm --needed hyperv
     configure_hyperv
 fi
 
 if [[ "${configure_kvm_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     # Install packages
-    pacman -S --noconfirm --needed libvirt gnome-boxes ebtables dnsmasq bridge-utils || echo 'Error installing packages.'
+    pacman -S --noconfirm --needed libvirt gnome-boxes ebtables dnsmasq bridge-utils
     configure_kvm
 fi
 
 if [[ "${configure_sway_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     # Install packages
-    pacman -S --noconfirm --needed sway swayidle swaylock i3status dmenu xorg-server-xwayland polkit-gnome xorg-xrandr acpilight || echo 'Error installing packages.'
+    pacman -S --needed sway swayidle swaylock i3status dmenu xorg-server-xwayland polkit-gnome xorg-xrandr acpilight
     configure_i3_sway_base "${user_name}" "${wifi_name}" "sway"
     configure_sway_config_file "${user_name}"
 fi
 
 if [[ "${configure_termite_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     # Install packages
-    pacman -S --noconfirm --needed termite || echo 'Error installing packages.'
+    pacman -S --noconfirm --needed termite
     configure_termite "${user_name}"
 fi
 
@@ -99,7 +99,7 @@ fi
 
 if [[ "${mount_drives_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     # Install linux-utils
-    pacman -S --noconfirm --needed util-linux || echo 'Error installing packages.'
+    pacman -S --noconfirm --needed util-linux
     mount_drives
 fi
 
@@ -109,19 +109,19 @@ fi
 
 if [[ "${configure_fwupd_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     # Install fwupd
-    pacman -S --noconfirm --needed fwupd || echo 'Error installing packages.'
+    pacman -S --noconfirm --needed fwupd
     configure_fwupd
 fi
 
 if [[ "${configure_git_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     # Install git
-    pacman -S --noconfirm --needed git || echo 'Error installing packages.'
+    pacman -S --noconfirm --needed git
     configure_git "${user_name}"
 fi
 
 if [[ "${setup_serial_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     # Install putty
-    pacman -S --noconfirm --needed putty || echo 'Error installing packages.'
+    pacman -S --noconfirm --needed putty
     configure_serial "${user_name}"
 fi
 
