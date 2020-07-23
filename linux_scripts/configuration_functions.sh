@@ -26,7 +26,6 @@ function configure_xorg() {
 }
 
 function setup_touchpad() {
-    rm -f '/etc/X11/xorg.conf.d/20-touchpad.conf'
     cat <<\EOF >'/etc/X11/xorg.conf.d/20-touchpad.conf'
 
 Section "InputClass"
@@ -39,12 +38,6 @@ Section "InputClass"
 EndSection
 
 EOF
-}
-
-function rank_mirrors() {
-    cp '/etc/pacman.d/mirrorlist' '/etc/pacman.d/mirrorlist.backup'
-    rm -f '/etc/pacman.d/mirrorlist'
-    rankmirrors -n 40 '/etc/pacman.d/mirrorlist.backup' >>'/etc/pacman.d/mirrorlist'
 }
 
 function pacman_auto_clear_cache() {
@@ -216,11 +209,9 @@ function configure_i3_sway_base() {
 
     # Setup wm config
     mkdir -p "/home/${user_name}/.config/${window_manager}"
-    rm -r "/home/${user_name}/.${window_manager}"
-    rm -rf "/home/${user_name}/.config/${window_manager}/config"
+    cp "/etc/${window_manager}/config" "/home/${user_name}/.config/${window_manager}/config"
 
     # Setup autostart applications
-    rm -rf "/usr/local/bin/${window_manager}_autostart.sh"
     cat <<EOF >"/usr/local/bin/${window_manager}_autostart.sh"
 #!/bin/bash
 
@@ -250,8 +241,6 @@ EOF
     chmod +x "/usr/local/bin/${window_manager}_autostart.sh"
 
     cat <<EOF >"/home/${user_name}/.config/${window_manager}/config"
-    # i3 config file (v4)
-    
     font pango:monospace 12
     
     exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork &
@@ -393,8 +382,8 @@ function configure_xinit_i3() {
     # Parameters
     local user_name=${1}
 
-    sed -i -E '/.*exec xterm.*/d' "/home/${user_name}/.xinitrc"
-    grep -q -E ".*i3" "/home/${user_name}/.xinitrc" && sed -i -E "s,.*i3.*,exec i3," "/home/${user_name}/.xinitrc" || printf '%s\n' 'exec i3' >>"/home/${user_name}/.xinitrc"
+    sed -i -E '/(^\s*[#]*\s*exec xterm.*$)/d' "/home/${user_name}/.xinitrc"
+    grep -q -E "(^.*i3.*$)" "/home/${user_name}/.xinitrc" && sed -i -E "s,(^.*i3.*$),exec i3," "/home/${user_name}/.xinitrc" || printf '%s\n' 'exec i3' >>"/home/${user_name}/.xinitrc"
 }
 
 function connect_smb() {
@@ -421,7 +410,7 @@ function connect_smb() {
         mkdir "${mount_location}"
 
         # Automount smb share
-        printf '%s\n' "${share} ${mount_location} cifs rw,noauto,x-systemd.automount,_netdev,uid=${user_name},user,username=${samba_username},password=${password} 0 0" >>'/etc/fstab'
+        grep -q -E "${share} ${mount_location} cifs rw,noauto,x-systemd\.automount,_netdev,uid=${user_name},user,username=${samba_username},password=${password} 0 0" '/etc/fstab' && sed -i -E "s,${share} ${mount_location} cifs rw\,noauto\,x-systemd\.automount\,_netdev\,uid=${user_name}\,user\,username=${samba_username}\,password=${password} 0 0,${share} ${mount_location} cifs rw\,noauto\,x-systemd\.automount\,_netdev\,uid=${user_name}\,user\,username=${samba_username}\,password=${password} 0 0," '/etc/fstab' || printf '%s\n' "${share} ${mount_location} cifs rw,noauto,x-systemd.automount,_netdev,uid=${user_name},user,username=${samba_username},password=${password} 0 0" >>'/etc/fstab'
 
         # Mount another disk
         read -r -p "Do you want to mount another samba share? [y/N] " response
@@ -444,7 +433,7 @@ function configure_gdm() {
     systemctl enable gdm.service
 
     # Enable autologin
-    rm -rf '/etc/gdm/custom.conf'
+    cp '/etc/gdm/custom.conf' '/etc/gdm/custom.conf.backup'
     cat <<EOF >'/etc/gdm/custom.conf'
 # Enable automatic login for user
 [daemon]
@@ -454,7 +443,7 @@ AutomaticLoginEnable=True
 EOF
 
     # Setup default session
-    rm -rf "/var/lib/AccountsService/users/$user_name"
+    cp "/var/lib/AccountsService/users/$user_name" "/var/lib/AccountsService/users/$user_name.backup"
     cat <<EOF >"/var/lib/AccountsService/users/$user_name"
     [User]
     Language=
@@ -475,12 +464,8 @@ function configure_hyperv() {
 
 function configure_kvm() {
     # Enable nested virtualization
-    rm -rf '/etc/modprobe.d/kvm_intel.conf'
-    cat <<EOF >'/etc/modprobe.d/kvm_intel.conf'
-
-options kvm_intel nested=1
-
-EOF
+    cp '/etc/modprobe.d/kvm_intel.conf' '/etc/modprobe.d/kvm_intel.conf.backup'
+    grep -q -E "(^\s*[#]*\s*options\s*kvm_intel\s*nested=.*$)" '/etc/modprobe.d/kvm_intel.conf' && sed -i -E "s,(^\s*[#]*\s*options\s*kvm_intel\s*nested=.*$),options kvm_intel nested=1," '/etc/modprobe.d/kvm_intel.conf' || printf '%s\n' 'options kvm_intel nested=1' >>'/etc/modprobe.d/kvm_intel.conf'
 }
 
 function configure_termite() {
@@ -488,9 +473,8 @@ function configure_termite() {
     local user_name=${1}
 
     # Setup termite config
-    mkdir "/home/${user_name}/.config"
-    mkdir "/home/${user_name}/.config/termite"
-    rm -rf "/home/${user_name}/.config/termite/config"
+    mkdir -p "/home/${user_name}/.config/termite"
+    cp "/home/${user_name}/.config/termite/config" "/home/${user_name}/.config/termite/config.backup"
     cat <<EOF >"/home/${user_name}/.config/termite/config"
     
     [options]
@@ -615,8 +599,8 @@ function mount_drives() {
         # Make directory to mount the disk at
         mkdir "${mount_location}"
 
-        # Automount smb share
-        printf '%s\n' "UUID=${uuid} ${mount_location} ${disk_type} rw,noauto,x-systemd.automount 0 0" >>'/etc/fstab'
+        # Automount drive
+        grep -q -E "UUID=${uuid} ${mount_location} ${disk_type} rw,noauto,x-systemd\.automount 0 0" '/etc/fstab' && sed -i -E "s,UUID=${uuid} ${mount_location} ${disk_type} rw\,noauto\,x-systemd\.automount 0 0,UUID=${uuid} ${mount_location} ${disk_type} rw\,noauto\,x-systemd\.automount 0 0," '/etc/fstab' || printf '%s\n' "UUID=${uuid} ${mount_location} ${disk_type} rw,noauto,x-systemd.automount 0 0" >>'/etc/fstab'
 
         # Mount another disk
         read -r -p "Do you want to mount another disk? [y/N] " response
@@ -632,11 +616,7 @@ function setup_aliases() {
     local user_name=${1}
 
     function copy_ssh_keys() {
-        cp '/mnt/matt_files/SSHConfigs/matt_homelab/nas_key' "/home/${user_name}/.ssh/nas_key"
-        cp '/mnt/matt_files/SSHConfigs/matt_homelab/openwrt_key' "/home/${user_name}/.ssh/openwrt_key"
-        cp '/mnt/matt_files/SSHConfigs/matt_homelab/proxmox_key' "/home/${user_name}/.ssh/proxmox_key"
-        cp '/mnt/matt_files/SSHConfigs/matt_homelab/vpn_key' "/home/${user_name}/.ssh/vpn_key"
-        cp '/mnt/matt_files/SSHConfigs/matt_homelab/pihole_key' "/home/${user_name}/.ssh/pihole_key"
+        cp '/mnt/matt_files/SSHConfigs/matt_homelab/.' "/home/${user_name}/.ssh/"
     }
 
     function configure_bashrc() {
@@ -655,13 +635,10 @@ function setup_aliases() {
 
 function configure_fwupd() {
     # Copy efi file
-    cp -a /usr/lib/fwupd/efi/fwupdx64.efi /boot/EFI/
+    cp -a '/usr/lib/fwupd/efi/fwupdx64.efi' '/boot/EFI/'
 
     # Setup hook
-    mkdir -p '/etc/pacman.d'
     mkdir -p '/etc/pacman.d/hooks'
-    touch '/etc/pacman.d/hooks/fwupd-to-esp.hook'
-    rm -rf '/etc/pacman.d/hooks/fwupd-to-esp.hook'
     cat <<EOF >'/etc/pacman.d/hooks/fwupd-to-esp.hook'
 [Trigger]
 Operation = Install

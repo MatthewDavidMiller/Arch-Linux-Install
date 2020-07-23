@@ -42,7 +42,6 @@ configure_ufw_base
 enable_ufw
 configure_xorg "${user_name}"
 setup_touchpad
-rank_mirrors
 pacman_auto_clear_cache
 lock_root
 configure_flatpak

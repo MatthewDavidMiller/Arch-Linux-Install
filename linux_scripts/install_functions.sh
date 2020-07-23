@@ -129,36 +129,8 @@ function mount_basic_filesystems_lvm() {
 }
 
 function arch_configure_mirrors() {
-    rm -f '/etc/pacman.d/mirrorlist'
-    cat <<\EOF >'/etc/pacman.d/mirrorlist'
-Server = https://archlinux.surlyjake.com/archlinux/$repo/os/$arch
-Server = https://mirror.arizona.edu/archlinux/$repo/os/$arch
-Server = https://arch.mirror.constant.com/$repo/os/$arch
-Server = https://mirror.dc02.hackingand.coffee/arch/$repo/os/$arch
-Server = https://repo.ialab.dsu.edu/archlinux/$repo/os/$arch
-Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch
-Server = https://mirror.dal10.us.leaseweb.net/archlinux/$repo/os/$arch
-Server = https://mirror.mia11.us.leaseweb.net/archlinux/$repo/os/$arch
-Server = https://mirror.sfo12.us.leaseweb.net/archlinux/$repo/os/$arch
-Server = https://mirror.wdc1.us.leaseweb.net/archlinux/$repo/os/$arch
-Server = https://mirror.lty.me/archlinux/$repo/os/$arch
-Server = https://reflector.luehm.com/arch/$repo/os/$arch
-Server = https://mirrors.lug.mtu.edu/archlinux/$repo/os/$arch
-Server = https://mirror.kaminski.io/archlinux/$repo/os/$arch
-Server = https://iad.mirrors.misaka.one/archlinux/$repo/os/$arch
-Server = https://mirrors.ocf.berkeley.edu/archlinux/$repo/os/$arch
-Server = https://dfw.mirror.rackspace.com/archlinux/$repo/os/$arch
-Server = https://iad.mirror.rackspace.com/archlinux/$repo/os/$arch
-Server = https://ord.mirror.rackspace.com/archlinux/$repo/os/$arch
-Server = https://mirrors.rit.edu/archlinux/$repo/os/$arch
-Server = https://mirrors.rutgers.edu/archlinux/$repo/os/$arch
-Server = https://mirrors.sonic.net/archlinux/$repo/os/$arch
-Server = https://arch.mirror.square-r00t.net/$repo/os/$arch
-Server = https://mirror.stephen304.com/archlinux/$repo/os/$arch
-Server = https://mirror.pit.teraswitch.com/archlinux/$repo/os/$arch
-Server = https://mirrors.xtom.com/archlinux/$repo/os/$arch
-
-EOF
+    cp '/etc/pacman.d/mirrorlist' '/etc/pacman.d/mirrorlist.backup'
+    reflector --latest 200 --protocol https --sort rate --save '/etc/pacman.d/mirrorlist'
 }
 
 function arch_install_base_packages_pacstrap() {
@@ -219,7 +191,7 @@ function create_basic_lvm_fstab() {
     # Parameters
     local duel_boot=${1}
 
-    rm -f '/etc/fstab'
+    cp '/etc/fstab' '/etc/fstab.backup'
     {
         printf '%s\n' '/swapfile none swap defaults 0 0'
         printf '%s\n' "UUID=${root_uuid} / ext4 defaults 0 0"
@@ -265,43 +237,26 @@ function arch_setup_locales() {
 }
 
 function set_language() {
-    rm -f '/etc/locale.conf'
-    {
-        printf '%s\n' '# language config'
-        printf '%s\n' '# file location is /etc/locale.conf'
-        printf '%s\n' ''
-        printf '%s\n' 'LANG=en_US.UTF-8'
-        printf '%s\n' ''
-    } >>'/etc/locale.conf'
+    cp '/etc/locale.conf' '/etc/locale.conf.backup'
+    grep -q -E "(^\s*[#]*\s*LANG=.*$)" '/etc/locale.conf' && sed -i -E "s,(^\s*[#]*\s*LANG=.*$),LANG=en_US\.UTF-8," '/etc/locale.conf' || printf '%s\n' 'LANG=en_US.UTF-8' >>'/etc/locale.conf'
 }
 
 function set_hostname() {
     # Parameters
     local device_hostname=${1}
 
-    rm -f '/etc/hostname'
-    {
-        printf '%s\n' '# hostname file'
-        printf '%s\n' '# File location is /etc/hostname'
-        printf '%s\n' "${device_hostname}"
-        printf '%s\n' ''
-    } >>'/etc/hostname'
+    cp '/etc/hostname' '/etc/hostname.backup'
+    printf '%s\n' "${device_hostname}" >'/etc/hostname'
 }
 
 function setup_hosts_file() {
     # Parameters
     local device_hostname=${1}
 
-    rm -f '/etc/hosts'
-    {
-        printf '%s\n' '# host file'
-        printf '%s\n' '# file location is /etc/hosts'
-        printf '%s\n' ''
-        printf '%s\n' '127.0.0.1 localhost'
-        printf '%s\n' '::1 localhost'
-        printf '%s\n' "127.0.1.1 ${device_hostname}.localdomain ${device_hostname}"
-        printf '%s\n' ''
-    } >>'/etc/hosts'
+    cp '/etc/hosts' '/etc/hosts.backup'
+    grep -q -E "(^\s*[#]*\s*127\.0\.0\.1 localhost$)" '/etc/hosts' && sed -i -E "s,(^\s*[#]*\s*127\.0\.0\.1 localhost$),127\.0\.0\.1 localhost," '/etc/hosts' || printf '%s\n' '127.0.0.1 localhost' >>'/etc/hosts'
+    grep -q -E "(^\s*[#]*\s*::1.*$)" '/etc/hosts' && sed -i -E "s,(^\s*[#]*\s*::1.*$),::1 localhost," '/etc/hosts' || printf '%s\n' '::1 localhost' >>'/etc/hosts'
+    grep -q -E "(^\s*[#]*\s*127\.0\.0\.1.*\.localdomain.*$)" '/etc/hosts' && sed -i -E "s,(^\s*[#]*\s*127\.0\.0\.1.*\.localdomain.*$),127\.0\.0\.1 ${device_hostname}\.localdomain ${device_hostname}," '/etc/hosts' || printf '%s\n' "127.0.0.1 ${device_hostname}.localdomain ${device_hostname}" >>'/etc/hosts'
 }
 
 function set_root_password() {
@@ -310,59 +265,34 @@ function set_root_password() {
 }
 
 function arch_configure_kernel() {
-    rm -f '/etc/mkinitcpio.conf'
-    {
-        printf '%s\n' '# config for kernel'
-        printf '%s\n' '# file location is /etc/mkinitcpio.conf'
-        printf '%s\n' ''
-        printf '%s\n' 'MODULES=()'
-        printf '%s\n' ''
-        printf '%s\n' 'BINARIES=()'
-        printf '%s\n' ''
-        printf '%s\n' 'FILES=()'
-        printf '%s\n' ''
-        printf '%s\n' 'HOOKS=(base udev autodetect keyboard keymap consolefont modconf block encrypt lvm2 filesystems fsck)'
-        printf '%s\n' ''
-    } >>'/etc/mkinitcpio.conf'
+    cp '/etc/mkinitcpio.conf' '/etc/mkinitcpio.conf.backup'
+    grep -q -E "(^\s*[#]*\s*HOOKS=.*$)" '/etc/mkinitcpio.conf' && sed -i -E "s,(^\s*[#]*\s*HOOKS=.*$),HOOKS=\(base udev autodetect keyboard keymap consolefont modconf block encrypt lvm2 filesystems fsck\)," '/etc/mkinitcpio.conf' || printf '%s\n' 'HOOKS=(base udev autodetect keyboard keymap consolefont modconf block encrypt lvm2 filesystems fsck)' >>'/etc/mkinitcpio.conf'
     mkinitcpio -P
 }
 
 function arch_setup_systemd_boot_luks_lvm() {
-    mkdir '/boot/loader'
-    mkdir '/boot/loader/entries'
+    mkdir -p '/boot/loader/entries'
 
-    {
-        printf '%s\n' '# kernel entry for systemd-boot'
-        printf '%s\n' '# file location is /boot/loader/entries/arch_linux_lts.conf'
-        printf '%s\n' ''
-        printf '%s\n' 'title   Arch Linux LTS Kernel'
-        printf '%s\n' 'linux   /vmlinuz-linux-lts'
-        printf '%s\n' "initrd  /${ucode}.img"
-        printf '%s\n' 'initrd  /initramfs-linux-lts.img'
-        printf '%s\n' "options cryptdevice=UUID=${luks_partition_uuid}:cryptlvm root=UUID=${root_uuid} rw"
-        printf '%s\n' ''
-    } >>'/boot/loader/entries/arch_linux_lts.conf'
+    cat <<EOF >'/boot/loader/entries/arch_linux_lts.conf'
+title   Arch Linux LTS Kernel
+linux   /vmlinuz-linux-lts
+initrd  /${ucode}.img
+initrd  /initramfs-linux-lts.img
+options cryptdevice=UUID=${luks_partition_uuid}:cryptlvm root=UUID=${root_uuid} rw
+EOF
 
-    {
-        printf '%s\n' '# kernel entry for systemd-boot'
-        printf '%s\n' '# file location is /boot/loader/entries/arch_linux.conf'
-        printf '%s\n' ''
-        printf '%s\n' 'title   Arch Linux Default Kernel'
-        printf '%s\n' 'linux   /vmlinuz-linux'
-        printf '%s\n' "initrd  /${ucode}.img"
-        printf '%s\n' 'initrd  /initramfs-linux.img'
-        printf '%s\n' "options cryptdevice=UUID=${luks_partition_uuid}:cryptlvm root=UUID=${root_uuid} rw"
-        printf '%s\n' ''
-    } >>'/boot/loader/entries/arch_linux.conf'
+    cat <<EOF >'/boot/loader/entries/arch_linux.conf'
+title   Arch Linux Default Kernel
+linux   /vmlinuz-linux
+initrd  /${ucode}.img
+initrd  /initramfs-linux.img
+options cryptdevice=UUID=${luks_partition_uuid}:cryptlvm root=UUID=${root_uuid} rw
+EOF
 
-    {
-        printf '%s\n' '# config for systemd-boot'
-        printf '%s\n' '# file location is /boot/loader/loader.conf'
-        printf '%s\n' ''
-        printf '%s\n' 'default  arch_linux.conf'
-        printf '%s\n' 'auto-entries 1'
-        printf '%s\n' ''
-    } >>'/boot/loader/loader.conf'
+    cat <<EOF >'/boot/loader/loader.conf'
+default  arch_linux.conf
+auto-entries 1
+EOF
 }
 
 function set_systemd_boot_install_path() {
@@ -383,8 +313,7 @@ function create_user() {
 function add_user_to_sudo() {
     # Parameters
     local user_name=${1}
-
-    printf '%s\n' "${user_name} ALL=(ALL) ALL" >>'/etc/sudoers'
+    grep -q -E "(^\s*[#]*\s*${user_name}.*$)" '/etc/sudoers' && sed -i -E "s,(^\s*[#]*\s*${user_name}.*$),${user_name} ALL=\(ALL\) ALL," '/etc/sudoers' || printf '%s\n' "${user_name} ALL=(ALL) ALL" >>'/etc/sudoers'
 }
 
 function enable_network_manager() {
