@@ -139,7 +139,7 @@ function arch_install_base_packages_pacstrap() {
 
 function arch_install_move_to_script_part_2() {
     cp install_functions.sh '/mnt/install_functions.sh'
-    wget -O '/mnt/arch_linux_install_part_2.sh' 'https://raw.githubusercontent.com/MatthewDavidMiller/Arch-Linux-Install/stable/linux_scripts/arch_linux_install_part_2.sh'
+    curl 'https://raw.githubusercontent.com/MatthewDavidMiller/Arch-Linux-Install/stable/linux_scripts/arch_linux_install_part_2.sh' -o '/mnt/arch_linux_install_part_2.sh'
     chmod +x '/mnt/arch_linux_install_part_2.sh'
     cat <<EOF >'/mnt/temp_variables.sh'
 disk="${disk}"
@@ -164,7 +164,7 @@ function arch_install_extra_packages() {
     # Parameters
     local duel_boot=${1}
 
-    pacman -S --noconfirm --needed ${ucode} efibootmgr pacman-contrib sudo networkmanager networkmanager-openvpn ufw wget xorg xorg-xinit xorg-drivers xorg-server xorg-apps bluez bluez-utils pulseaudio pulseaudio-bluetooth pulsemixer libinput xf86-input-libinput firefox gnome-keyring termite htop cron || echo 'Error installing packages.'
+    pacman -S --noconfirm --needed ${ucode} efibootmgr pacman-contrib sudo networkmanager networkmanager-openvpn ufw curl xorg xorg-xinit xorg-drivers xorg-server xorg-apps bluez bluez-utils pulseaudio pulseaudio-bluetooth pulsemixer libinput xf86-input-libinput firefox gnome-keyring termite htop cron || echo 'Error installing packages.'
 
     if [[ ! "${duel_boot}" =~ ^([d][b])+$ ]]; then
         pacman -S --noconfirm --needed linux-lts

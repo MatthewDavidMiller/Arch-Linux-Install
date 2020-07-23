@@ -9,7 +9,7 @@
 # script_location="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 # Get needed scripts
-wget -O 'configuration_functions.sh' 'https://raw.githubusercontent.com/MatthewDavidMiller/Arch-Linux-Install/stable/linux_scripts/configuration_functions.sh'
+curl 'https://raw.githubusercontent.com/MatthewDavidMiller/Arch-Linux-Install/stable/linux_scripts/configuration_functions.sh' -o 'configuration_functions.sh'
 
 # Source functions
 source configuration_functions.sh
