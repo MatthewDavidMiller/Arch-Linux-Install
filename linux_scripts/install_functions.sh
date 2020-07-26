@@ -200,7 +200,7 @@ function create_basic_lvm_fstab() {
     if [[ "${duel_boot}" =~ ^([d][b])+$ ]]; then
         printf '%s\n' "UUID=${windows_efi_uuid} /boot vfat defaults 0 0" >>'/etc/fstab'
     else
-        printf '%s\n' "UUID=${boot_uuid} /boot vfat defaults 0 0"
+        printf '%s\n' "UUID=${boot_uuid} /boot vfat defaults 0 0" >>'/etc/fstab'
     fi
 }
 
