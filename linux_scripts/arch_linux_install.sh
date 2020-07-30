@@ -25,8 +25,10 @@ delete_partitions_response='n'
 ucode_response='y'
 wifi_interface='wlan0'
 ssid='Miller Homelab'
-partition_1_size='512M'
-partition_2_size='19968M'
+# Default size 512MB
+partition_1_size='+512M'
+# Default use all free space
+partition_2_size='0'
 root_partition_size='100%FREE'
 lvm_name='Archlvm'
 
