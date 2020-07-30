@@ -17,23 +17,129 @@ source configuration_functions.sh
 # Default variables
 wifi_name='Miller Homelab'
 
-# Prompts
-read -r -p "Run arch_linux_packages script? [y/N] " install_arch_packages_var
-read -r -p "Run configure_i3 script? [y/N] " configure_i3_var
-read -r -p "Run connect_smb script? [y/N] " connect_smb_var
-read -r -p "Set a timer to select OS or kernel? [y/N] " ostimer
-read -r -p "Run configure_gdm script? [y/N] " configure_gdm_var
-read -r -p "Run configure_hyper_v_guest script? [y/N] " configure_hyperv_var
-read -r -p "Run configure_kvm script? [y/N] " configure_kvm_var
-read -r -p "Run configure_sway script? [y/N] " configure_sway_var
-read -r -p "Run configure_termite script? [y/N] " configure_termite_var
-read -r -p "Run install_aur_packages script? [y/N] " install_aur_packages_var
-read -r -p "Run mount_drives script? [y/N] " mount_drives_var
-read -r -p "Run setup_aliases script? [y/N] " setup_aliases_var
-read -r -p "Run setup_fwupd script? [y/N] " configure_fwupd_var
-read -r -p "Run setup_git script? [y/N] " configure_git_var
-read -r -p "Run setup_serial script? [y/N] " setup_serial_var
-read -r -p "Configure cli autologin? [y/N] " cli_autologin_response
+PS3='Select Configuration Option: '
+options=("Install Arch Linux Packages" "Configure I3 Windows Manager" "Configure Samba Share" "Configure Gnome Display Manager" "Configure Hyper-V" "Configure KVM")
+options_select
+
+select options_select in "${options[@]}"; do
+    case $options_select in
+
+    "Install Arch Linux Packages")
+        install_arch_packages
+        install_arch_packages_part_2
+        install_arch_packages_part_3
+        install_arch_packages_part_4
+        install_arch_packages_part_5
+        ;;
+    "Configure I3 Windows Manager")
+        get_username
+        # Install packages
+        pacman -S --needed i3-wm i3blocks i3lock i3status dmenu picom xorg-xrandr acpilight
+        configure_i3_sway_base "${user_name}" "${wifi_name}" "i3"
+        configure_xinit
+        configure_xinit_i3
+        ;;
+    "Configure Samba Share")
+        # Install samba
+        pacman -S --noconfirm --needed samba
+        get_username
+        connect_smb "${user_name}"
+        ;;
+    "Configure Gnome Display Manager")
+        get_username
+        configure_gdm "${user_name}"
+        ;;
+    "Configure Hyper-V")
+        # Install hyperv tools
+        pacman -S --noconfirm --needed hyperv
+        configure_hyperv
+        ;;
+    "Configure KVM")
+        # Install packages
+        pacman -S --noconfirm --needed libvirt gnome-boxes ebtables dnsmasq bridge-utils
+        configure_kvm
+        ;;
+    "Quit")
+        break
+        ;;
+    *) echo "$REPLY is not an option" ;;
+    esac
+done
+
+PS3='Select Configuration Option: '
+options=("Configure Sway" "Configure Termite" "Install Aur Packages" "Mount Drives" "Setup Aliases" "Configure FWUPD")
+options_select
+
+select options_select in "${options[@]}"; do
+    case $options_select in
+
+    "Configure Sway")
+        get_username
+        # Install packages
+        pacman -S --needed sway swayidle swaylock i3status dmenu xorg-server-xwayland polkit-gnome xorg-xrandr acpilight
+        configure_i3_sway_base "${user_name}" "${wifi_name}" "sway"
+        configure_sway_config_file "${user_name}"
+        ;;
+    "Configure Termite")
+        get_username
+        # Install packages
+        pacman -S --noconfirm --needed termite
+        configure_termite "${user_name}"
+        ;;
+    "Install Aur Packages")
+        get_username
+        install_aur_packages
+        ;;
+    "Mount Drives")
+        # Install linux-utils
+        pacman -S --noconfirm --needed util-linux
+        mount_drives
+        ;;
+    "Setup Aliases")
+        get_username
+        setup_aliases "${user_name}"
+        ;;
+    "Configure FWUPD")
+        # Install fwupd
+        pacman -S --noconfirm --needed fwupd
+        configure_fwupd
+        ;;
+    "Quit")
+        break
+        ;;
+    *) echo "$REPLY is not an option" ;;
+    esac
+done
+
+PS3='Select Configuration Option: '
+options=("Configure Git" "Configure Serial" "Configure CLI Autologin")
+options_select
+
+select options_select in "${options[@]}"; do
+    case $options_select in
+
+    "Configure Git")
+        get_username
+        # Install git
+        pacman -S --noconfirm --needed git
+        configure_git "${user_name}"
+        ;;
+    "Configure Serial")
+        get_username
+        # Install putty
+        pacman -S --noconfirm --needed putty
+        configure_serial "${user_name}"
+        ;;
+    "Configure CLI Autologin")
+        get_username
+        cli_autologin "${user_name}"
+        ;;
+    "Quit")
+        break
+        ;;
+    *) echo "$REPLY is not an option" ;;
+    esac
+done
 
 # Call functions
 get_username
@@ -45,90 +151,3 @@ setup_touchpad
 pacman_auto_clear_cache
 lock_root
 configure_flatpak
-
-if [[ "${install_arch_packages_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-    install_arch_packages
-fi
-
-if [[ "${configure_i3_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-    # Install packages
-    pacman -S --needed i3-wm i3blocks i3lock i3status dmenu picom xorg-xrandr acpilight
-    configure_i3_sway_base "${user_name}" "${wifi_name}" "i3"
-    configure_xinit
-    configure_xinit_i3
-fi
-
-if [[ "${connect_smb_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-    # Install samba
-    pacman -S --noconfirm --needed samba
-    connect_smb "${user_name}"
-fi
-
-if [[ "${configure_gdm_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-    configure_gdm "${user_name}"
-fi
-
-if [[ "${configure_hyperv_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-    # Install hyperv tools
-    pacman -S --noconfirm --needed hyperv
-    configure_hyperv
-fi
-
-if [[ "${configure_kvm_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-    # Install packages
-    pacman -S --noconfirm --needed libvirt gnome-boxes ebtables dnsmasq bridge-utils
-    configure_kvm
-fi
-
-if [[ "${configure_sway_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-    # Install packages
-    pacman -S --needed sway swayidle swaylock i3status dmenu xorg-server-xwayland polkit-gnome xorg-xrandr acpilight
-    configure_i3_sway_base "${user_name}" "${wifi_name}" "sway"
-    configure_sway_config_file "${user_name}"
-fi
-
-if [[ "${configure_termite_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-    # Install packages
-    pacman -S --noconfirm --needed termite
-    configure_termite "${user_name}"
-fi
-
-if [[ "${install_aur_packages_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-    install_aur_packages
-fi
-
-if [[ "${mount_drives_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-    # Install linux-utils
-    pacman -S --noconfirm --needed util-linux
-    mount_drives
-fi
-
-if [[ "${setup_aliases_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-    setup_aliases "${user_name}"
-fi
-
-if [[ "${configure_fwupd_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-    # Install fwupd
-    pacman -S --noconfirm --needed fwupd
-    configure_fwupd
-fi
-
-if [[ "${configure_git_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-    # Install git
-    pacman -S --noconfirm --needed git
-    configure_git "${user_name}"
-fi
-
-if [[ "${setup_serial_var}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-    # Install putty
-    pacman -S --noconfirm --needed putty
-    configure_serial "${user_name}"
-fi
-
-if [[ "${ostimer}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-    configure_ostimer
-fi
-
-if [[ "${cli_autologin_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-    cli_autologin "${user_name}"
-fi

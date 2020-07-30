@@ -50,138 +50,164 @@ function lock_root() {
 }
 
 function install_arch_packages() {
-    # Prompts
-    read -r -p "Install gnome desktop environment? [y/N] " gnome_response
-    read -r -p "Install i3 windows manager? [y/N] " i3_response
-    read -r -p "Install blender? [y/N] " blender_response
-    read -r -p "Install gimp? [y/N] " gimp_response
-    read -r -p "Install libreoffice? [y/N] " libreoffice_response
-    read -r -p "Install vscode? [y/N] " vscode_response
-    read -r -p "Install git? [y/N] " git_response
-    read -r -p "Install putty? [y/N] " putty_response
-    read -r -p "Install Nvidia LTS driver? [y/N] " nvidia_response
-    read -r -p "Install dolphin file manager? [y/N] " dolphin_fm_response
-    read -r -p "Install audacity? [y/N] " audacity_response
-    read -r -p "Install nmap? [y/N] " nmap_response
-    read -r -p "Install wireshark? [y/N] " wireshark_response
-    read -r -p "Install ntop? [y/N] " ntop_response
-    read -r -p "Install jnettop? [y/N] " jnettop_response
-    read -r -p "Install nethogs? [y/N] " nethogs_response
-    read -r -p "Install clamav? [y/N] " clamav_response
-    read -r -p "Install vim? [y/N] " vim_response
-    read -r -p "Install shellcheck? [y/N] " shellcheck_response
-    read -r -p "Install tftpd? [y/N] " tftpd_response
-    read -r -p "Install cmake? [y/N] " cmake_response
-    read -r -p "Install pylint? [y/N] " pylint_response
-    read -r -p "Install light? [y/N] " light_response
-    read -r -p "Install rsync? [y/N] " rsync_response
-    read -r -p "Install seahorse? [y/N] " seahorse_response
-    read -r -p "Install blueman? [y/N] " blueman_response
+    local PS3='Select packages to install: '
+    local options=("Gnome Desktop Environment" "I3 Windows Manager" "Blender" "Gimp" "Libreoffice" "VSCode")
+    local options_select
 
-    if [[ "${gnome_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed gnome
-    fi
+    select options_select in "${options[@]}"; do
+        case $options_select in
 
-    if [[ "${i3_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed i3-wm i3blocks i3lock i3status dmenu
-    fi
+        "Gnome Desktop Environment")
+            pacman -S --noconfirm --needed gnome
+            ;;
+        "I3 Windows Manager")
+            pacman -S --noconfirm --needed i3-wm i3blocks i3lock i3status dmenu
+            ;;
+        "Blender")
+            pacman -S --noconfirm --needed blender
+            ;;
+        "Gimp")
+            pacman -S --noconfirm --needed gimp
+            ;;
+        "Libreoffice")
+            pacman -S --noconfirm --needed libreoffice-fresh
+            ;;
+        "VSCode")
+            pacman -S --noconfirm --needed code
+            ;;
+        "Quit")
+            break
+            ;;
+        *) echo "$REPLY is not an option" ;;
+        esac
+    done
+}
 
-    if [[ "${blender_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed blender
-    fi
+function install_arch_packages_part_2() {
+    local PS3='Select packages to install: '
+    local options=("Git" "Putty" "Nvidia LTS Driver" "Dolphin File Manager" "Audacity" "Nmap")
+    local options_select
 
-    if [[ "${gimp_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed gimp
-    fi
+    select options_select in "${options[@]}"; do
+        case $options_select in
 
-    if [[ "${libreoffice_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed libreoffice-fresh
-    fi
+        "Git")
+            pacman -S --noconfirm --needed git
+            ;;
+        "Putty")
+            pacman -S --noconfirm --needed putty
+            ;;
+        "Nvidia LTS Driver")
+            pacman -S --noconfirm --needed nvidia-lts
+            ;;
+        "Dolphin File Manager")
+            pacman -S --noconfirm --needed dolphin
+            ;;
+        "Audacity")
+            pacman -S --noconfirm --needed audacity
+            ;;
+        "Nmap")
+            pacman -S --noconfirm --needed nmap
+            ;;
+        "Quit")
+            break
+            ;;
+        *) echo "$REPLY is not an option" ;;
+        esac
+    done
+}
 
-    if [[ "${vscode_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed code
-    fi
+function install_arch_packages_part_3() {
+    local PS3='Select packages to install: '
+    local options=("Wireshark" "Ntop" "Jnettop" "Nethogs" "Clamav" "Vim")
+    local options_select
 
-    if [[ "${git_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed git
-    fi
+    select options_select in "${options[@]}"; do
+        case $options_select in
 
-    if [[ "${putty_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed putty
-    fi
+        "Wireshark")
+            pacman -S --noconfirm --needed wireshark-cli
+            ;;
+        "Ntop")
+            pacman -S --noconfirm --needed ntop
+            ;;
+        "Jnettop")
+            pacman -S --noconfirm --needed jnettop
+            ;;
+        "Nethogs")
+            pacman -S --noconfirm --needed nethogs
+            ;;
+        "Clamav")
+            pacman -S --noconfirm --needed clamav
+            ;;
+        "Vim")
+            pacman -S --noconfirm --needed vim
+            ;;
+        "Quit")
+            break
+            ;;
+        *) echo "$REPLY is not an option" ;;
+        esac
+    done
+}
 
-    if [[ "${nvidia_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed nvidia-lts
-    fi
+function install_arch_packages_part_4() {
+    local PS3='Select packages to install: '
+    local options=("Shellcheck" "Tftpd" "Cmake" "Pylint" "Light" "Rsync")
+    local options_select
 
-    if [[ "${dolphin_fm_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed dolphin
-    fi
+    select options_select in "${options[@]}"; do
+        case $options_select in
 
-    if [[ "${audacity_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed audacity
-    fi
+        "Shellcheck")
+            pacman -S --noconfirm --needed shellcheck
+            ;;
+        "Tftpd")
+            pacman -S --noconfirm --needed tftp-hpa
+            ;;
+        "Cmake")
+            pacman -S --noconfirm --needed cmake
+            ;;
+        "Pylint")
+            pacman -S --noconfirm --needed python-pylint
+            ;;
+        "Light")
+            pacman -S --noconfirm --needed light
+            ;;
+        "Rsync")
+            pacman -S --noconfirm --needed rsync
+            ;;
+        "Quit")
+            break
+            ;;
+        *) echo "$REPLY is not an option" ;;
+        esac
+    done
+}
 
-    if [[ "${nmap_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed nmap
-    fi
+function install_arch_packages_part_5() {
+    local PS3='Select packages to install: '
+    local options=("Seahorse" "Blueman" "Imv")
+    local options_select
 
-    if [[ "${wireshark_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed wireshark-cli
-    fi
+    select options_select in "${options[@]}"; do
+        case $options_select in
 
-    if [[ "${ntop_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed ntop
-    fi
-
-    if [[ "${jnettop_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed jnettop
-    fi
-
-    if [[ "${nethogs_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed nethogs
-    fi
-
-    if [[ "${clamav_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed clamav
-    fi
-
-    if [[ "${vim_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed vim
-    fi
-
-    if [[ "${shellcheck_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed shellcheck
-    fi
-
-    if [[ "${tftpd_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed tftp-hpa
-    fi
-
-    if [[ "${cmake_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed cmake
-    fi
-
-    if [[ "${pylint_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed python-pylint
-    fi
-
-    if [[ "${light_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed light
-    fi
-
-    if [[ "${rsync_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed rsync
-    fi
-
-    if [[ "${seahorse_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed seahorse
-    fi
-
-    if [[ "${blueman_response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        pacman -S --noconfirm --needed blueman
-    fi
-
+        "Seahorse")
+            pacman -S --noconfirm --needed seahorse
+            ;;
+        "Blueman")
+            pacman -S --noconfirm --needed blueman
+            ;;
+        "Imv")
+            pacman -S --noconfirm --needed imv
+            ;;
+        "Quit")
+            break
+            ;;
+        *) echo "$REPLY is not an option" ;;
+        esac
+    done
 }
 
 function configure_i3_sway_base() {
