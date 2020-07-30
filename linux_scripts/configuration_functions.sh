@@ -51,7 +51,7 @@ function lock_root() {
 
 function install_arch_packages() {
     local PS3='Select packages to install: '
-    local options=("Gnome Desktop Environment" "I3 Windows Manager" "Blender" "Gimp" "Libreoffice" "VSCode")
+    local options=("Gnome Desktop Environment" "I3 Windows Manager" "Blender" "Gimp" "Libreoffice" "VSCode" "Quit")
     local options_select
 
     select options_select in "${options[@]}"; do
@@ -85,7 +85,7 @@ function install_arch_packages() {
 
 function install_arch_packages_part_2() {
     local PS3='Select packages to install: '
-    local options=("Git" "Putty" "Nvidia LTS Driver" "Dolphin File Manager" "Audacity" "Nmap")
+    local options=("Git" "Putty" "Nvidia LTS Driver" "Dolphin File Manager" "Audacity" "Nmap" "Quit")
     local options_select
 
     select options_select in "${options[@]}"; do
@@ -119,7 +119,7 @@ function install_arch_packages_part_2() {
 
 function install_arch_packages_part_3() {
     local PS3='Select packages to install: '
-    local options=("Wireshark" "Ntop" "Jnettop" "Nethogs" "Clamav" "Vim")
+    local options=("Wireshark" "Ntop" "Jnettop" "Nethogs" "Clamav" "Vim" "Quit")
     local options_select
 
     select options_select in "${options[@]}"; do
@@ -153,7 +153,7 @@ function install_arch_packages_part_3() {
 
 function install_arch_packages_part_4() {
     local PS3='Select packages to install: '
-    local options=("Shellcheck" "Tftpd" "Cmake" "Pylint" "Light" "Rsync")
+    local options=("Shellcheck" "Tftpd" "Cmake" "Pylint" "Light" "Rsync" "Quit")
     local options_select
 
     select options_select in "${options[@]}"; do
@@ -187,7 +187,7 @@ function install_arch_packages_part_4() {
 
 function install_arch_packages_part_5() {
     local PS3='Select packages to install: '
-    local options=("Seahorse" "Blueman" "Imv")
+    local options=("Seahorse" "Blueman" "Imv" "Quit")
     local options_select
 
     select options_select in "${options[@]}"; do

@@ -18,7 +18,7 @@ source configuration_functions.sh
 wifi_name='Miller Homelab'
 
 PS3='Select Configuration Option: '
-options=("Install Arch Linux Packages" "Configure I3 Windows Manager" "Configure Samba Share" "Configure Gnome Display Manager" "Configure Hyper-V" "Configure KVM")
+options=("Install Arch Linux Packages" "Configure I3 Windows Manager" "Configure Samba Share" "Configure Gnome Display Manager" "Configure Hyper-V" "Configure KVM" "Quit")
 options_select
 
 select options_select in "${options[@]}"; do
@@ -67,7 +67,7 @@ select options_select in "${options[@]}"; do
 done
 
 PS3='Select Configuration Option: '
-options=("Configure Sway" "Configure Termite" "Install Aur Packages" "Mount Drives" "Setup Aliases" "Configure FWUPD")
+options=("Configure Sway" "Configure Termite" "Install Aur Packages" "Mount Drives" "Setup Aliases" "Configure FWUPD" "Quit")
 options_select
 
 select options_select in "${options[@]}"; do
@@ -112,7 +112,7 @@ select options_select in "${options[@]}"; do
 done
 
 PS3='Select Configuration Option: '
-options=("Configure Git" "Configure Serial" "Configure CLI Autologin")
+options=("Configure Git" "Configure Serial" "Configure CLI Autologin" "Quit")
 options_select
 
 select options_select in "${options[@]}"; do
