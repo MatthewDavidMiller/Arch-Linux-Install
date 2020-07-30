@@ -17,6 +17,17 @@ source configuration_functions.sh
 # Default variables
 wifi_name='Miller Homelab'
 
+# Call functions
+get_username
+enable_bluetooth
+configure_ufw_base
+enable_ufw
+configure_xorg "${user_name}"
+setup_touchpad
+pacman_auto_clear_cache
+lock_root
+configure_flatpak
+
 PS3='Select Configuration Option: '
 options=("Install Arch Linux Packages" "Configure I3 Windows Manager" "Configure Samba Share" "Configure Gnome Display Manager" "Configure Hyper-V" "Configure KVM" "Quit")
 options_select
@@ -140,14 +151,3 @@ select options_select in "${options[@]}"; do
     *) echo "$REPLY is not an option" ;;
     esac
 done
-
-# Call functions
-get_username
-enable_bluetooth
-configure_ufw_base
-enable_ufw
-configure_xorg "${user_name}"
-setup_touchpad
-pacman_auto_clear_cache
-lock_root
-configure_flatpak
