@@ -134,7 +134,7 @@ function arch_configure_mirrors() {
 }
 
 function arch_install_base_packages_pacstrap() {
-    pacstrap /mnt --noconfirm base base-devel linux linux-firmware systemd e2fsprogs ntfs-3g exfat-utils vi man-db man-pages texinfo lvm2 xf86-video-intel xf86-video-amdgpu xf86-video-nouveau bash bash-completion ntp util-linux iwd || echo 'Error installing packages.'
+    pacstrap /mnt --noconfirm base base-devel linux linux-firmware systemd e2fsprogs ntfs-3g exfat-utils vi man-db man-pages texinfo lvm2 xf86-video-intel xf86-video-amdgpu xf86-video-nouveau bash bash-completion ntp util-linux iwd
 }
 
 function arch_install_move_to_script_part_2() {
@@ -164,7 +164,7 @@ function arch_install_extra_packages() {
     # Parameters
     local duel_boot=${1}
 
-    pacman -S --noconfirm --needed ${ucode} efibootmgr pacman-contrib sudo networkmanager networkmanager-openvpn ufw curl xorg xorg-xinit xorg-drivers xorg-server xorg-apps bluez bluez-utils pulseaudio pulseaudio-bluetooth pulsemixer libinput xf86-input-libinput firefox gnome-keyring termite htop cron || echo 'Error installing packages.'
+    pacman -S --noconfirm --needed ${ucode} efibootmgr pacman-contrib sudo networkmanager networkmanager-openvpn ufw curl xorg xorg-xinit xorg-drivers xorg-server xorg-apps bluez bluez-utils pulseaudio pulseaudio-bluetooth pulsemixer libinput xf86-input-libinput firefox gnome-keyring termite htop cron nnn
 
     if [[ ! "${duel_boot}" =~ ^([d][b])+$ ]]; then
         pacman -S --noconfirm --needed linux-lts
