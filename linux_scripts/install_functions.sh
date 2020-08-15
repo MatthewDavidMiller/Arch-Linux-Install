@@ -278,7 +278,7 @@ title   Arch Linux LTS Kernel
 linux   /vmlinuz-linux-lts
 initrd  /${ucode}.img
 initrd  /initramfs-linux-lts.img
-options cryptdevice=UUID=${luks_partition_uuid}:cryptlvm root=UUID=${root_uuid} rw
+options cryptdevice=UUID=${luks_partition_uuid}:cryptlvm root=UUID=${root_uuid} rw module.sig_enforce=1
 EOF
 
     cat <<EOF >'/boot/loader/entries/arch_linux.conf'
@@ -286,7 +286,7 @@ title   Arch Linux Default Kernel
 linux   /vmlinuz-linux
 initrd  /${ucode}.img
 initrd  /initramfs-linux.img
-options cryptdevice=UUID=${luks_partition_uuid}:cryptlvm root=UUID=${root_uuid} rw
+options cryptdevice=UUID=${luks_partition_uuid}:cryptlvm root=UUID=${root_uuid} rw module.sig_enforce=1
 EOF
 
     cat <<EOF >'/boot/loader/loader.conf'
