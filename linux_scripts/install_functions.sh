@@ -289,6 +289,14 @@ initrd  /initramfs-linux.img
 options cryptdevice=UUID=${luks_partition_uuid}:cryptlvm root=UUID=${root_uuid} rw module.sig_enforce=1
 EOF
 
+    cat <<EOF >'/boot/loader/entries/arch_linux_hardened.conf'
+title   Arch Linux Hardened Kernel
+linux   /vmlinuz-linux-hardened
+initrd  /${ucode}.img
+initrd  /initramfs-linux-hardened.img
+options cryptdevice=UUID=${luks_partition_uuid}:cryptlvm root=UUID=${root_uuid} rw module.sig_enforce=1
+EOF
+
     cat <<EOF >'/boot/loader/loader.conf'
 default  arch_linux.conf
 auto-entries 1
