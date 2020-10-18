@@ -52,7 +52,6 @@ function lock_root() {
 function install_arch_packages() {
     local PS3='Select packages to install: '
     local options=("Gnome Desktop Environment" "I3 Windows Manager" "Blender" "Gimp" "Libreoffice" "VSCode" "Quit")
-    local options_select
 
     select options_select in "${options[@]}"; do
         case $options_select in
@@ -86,7 +85,6 @@ function install_arch_packages() {
 function install_arch_packages_part_2() {
     local PS3='Select packages to install: '
     local options=("Git" "Putty" "Nvidia LTS Driver" "Dolphin File Manager" "Audacity" "Nmap" "Quit")
-    local options_select
 
     select options_select in "${options[@]}"; do
         case $options_select in
@@ -120,7 +118,6 @@ function install_arch_packages_part_2() {
 function install_arch_packages_part_3() {
     local PS3='Select packages to install: '
     local options=("Wireshark" "Ntop" "Jnettop" "Nethogs" "Clamav" "Vim" "Quit")
-    local options_select
 
     select options_select in "${options[@]}"; do
         case $options_select in
@@ -154,7 +151,6 @@ function install_arch_packages_part_3() {
 function install_arch_packages_part_4() {
     local PS3='Select packages to install: '
     local options=("Shellcheck" "Tftpd" "Cmake" "Pylint" "Light" "Rsync" "Quit")
-    local options_select
 
     select options_select in "${options[@]}"; do
         case $options_select in
@@ -188,7 +184,6 @@ function install_arch_packages_part_4() {
 function install_arch_packages_part_5() {
     local PS3='Select packages to install: '
     local options=("Seahorse" "Blueman" "Imv" "Quit")
-    local options_select
 
     select options_select in "${options[@]}"; do
         case $options_select in
@@ -268,62 +263,62 @@ EOF
 
     cat <<EOF >"/home/${user_name}/.config/${window_manager}/config"
     font pango:monospace 12
-    
+
     exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork &
-    
+
     set \$up l
     set \$down k
     set \$left j
     set \$right semicolon
-    
+
     floating_modifier Mod1
-    
+
     bindsym Mod1+Return exec i3-sensible-terminal
-    
+
     bindsym Mod1+Shift+q kill
-    
+
     bindsym Mod1+d exec dmenu_run
-    
+
     bindsym Mod1+\$left focus left
     bindsym Mod1+\$down focus down
     bindsym Mod1+\$up focus up
     bindsym Mod1+\$right focus right
-    
+
     bindsym Mod1+Left focus left
     bindsym Mod1+Down focus down
     bindsym Mod1+Up focus up
     bindsym Mod1+Right focus right
-    
+
     bindsym Mod1+Shift+\$left move left
     bindsym Mod1+Shift+\$down move down
     bindsym Mod1+Shift+\$up move up
     bindsym Mod1+Shift+\$right move right
-    
+
     bindsym Mod1+Shift+Left move left
     bindsym Mod1+Shift+Down move down
     bindsym Mod1+Shift+Up move up
     bindsym Mod1+Shift+Right move right
-    
+
     bindsym Mod1+h split h
-    
+
     bindsym Mod1+v split v
-    
+
     bindsym Mod1+f fullscreen toggle
-    
+
     bindsym Mod1+s layout stacking
     bindsym Mod1+w layout tabbed
     bindsym Mod1+e layout toggle split
-    
+
     bindsym Mod1+Shift+space floating toggle
-    
+
     bindsym Mod1+space focus mode_toggle
-    
+
     bindsym Mod1+a focus parent
-    
+
     bindsym Mod1+Shift+minus move scratchpad
 
     bindsym Mod1+minus scratchpad show
-    
+
     set \$ws1 "1"
     set \$ws2 "2"
     set \$ws3 "3"
@@ -334,7 +329,7 @@ EOF
     set \$ws8 "8"
     set \$ws9 "9"
     set \$ws10 "10"
-    
+
     bindsym Mod1+1 workspace number \$ws1
     bindsym Mod1+2 workspace number \$ws2
     bindsym Mod1+3 workspace number \$ws3
@@ -345,7 +340,7 @@ EOF
     bindsym Mod1+8 workspace number \$ws8
     bindsym Mod1+9 workspace number \$ws9
     bindsym Mod1+0 workspace number \$ws10
-    
+
     bindsym Mod1+Shift+1 move container to workspace number \$ws1
     bindsym Mod1+Shift+2 move container to workspace number \$ws2
     bindsym Mod1+Shift+3 move container to workspace number \$ws3
@@ -356,41 +351,41 @@ EOF
     bindsym Mod1+Shift+8 move container to workspace number \$ws8
     bindsym Mod1+Shift+9 move container to workspace number \$ws9
     bindsym Mod1+Shift+0 move container to workspace number \$ws10
-    
+
     bindsym Mod1+Shift+c reload
-    
+
     bindsym Mod1+Shift+r restart
-    
+
     bindsym Mod1+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
-    
+
     mode "resize" {
-        
+
         bindsym \$left       resize shrink width 10 px or 10 ppt
         bindsym \$down       resize grow height 10 px or 10 ppt
         bindsym \$up         resize shrink height 10 px or 10 ppt
         bindsym \$right      resize grow width 10 px or 10 ppt
-        
+
         bindsym Left        resize shrink width 10 px or 10 ppt
         bindsym Down        resize grow height 10 px or 10 ppt
         bindsym Up          resize shrink height 10 px or 10 ppt
         bindsym Right       resize grow width 10 px or 10 ppt
-        
+
         bindsym Return mode "default"
         bindsym Escape mode "default"
         bindsym Mod1+r mode "default"
     }
-    
+
     bindsym Mod1+r mode "resize"
-    
+
     bar {
         status_command i3status
         mode hide
         hidden_state hide
         modifier Mod1
     }
-    
+
     exec --no-startup-id bash '/usr/local/bin/${window_manager}_autostart.sh'
-    
+
 EOF
 
 }
@@ -475,7 +470,7 @@ EOF
     Language=
     Session=${session}
     XSession=${session}
-    
+
 EOF
 }
 
@@ -502,21 +497,21 @@ function configure_termite() {
     mkdir -p "/home/${user_name}/.config/termite"
     cp "/home/${user_name}/.config/termite/config" "/home/${user_name}/.config/termite/config.backup"
     cat <<EOF >"/home/${user_name}/.config/termite/config"
-    
+
     [options]
     font = Monospace 16
     scrollback_lines = 10000
-    
+
     [colors]
-    
+
     # If unset, will reverse foreground and background
     highlight = #2f2f2f
-    
+
     # Colors from color0 to color254 can be set
     color0 = #000000
-    
+
     [hints]
-    
+
 EOF
 }
 
@@ -532,7 +527,7 @@ function configure_sway_config_file() {
         tap enabled
         natural_scroll disabled
     }
-    
+
 EOF
 }
 
